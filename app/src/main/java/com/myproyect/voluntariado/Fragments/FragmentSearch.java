@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
@@ -30,6 +31,7 @@ public class FragmentSearch extends Fragment {
     private VolunteerAdapter adapter;
     private List<VolunteerOpportunity> opportunities;
     private List<VolunteerOpportunity> filteredOpportunities;
+    private SearchView searchView;
 
 
     @Nullable
@@ -38,11 +40,10 @@ public class FragmentSearch extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        // Inicializa RecyclerView
+        // Configurar RecyclerView
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        DividerItemDecoration divider = new DividerItemDecoration(recyclerView.getContext(), LinearLayoutManager.VERTICAL);
-        recyclerView.addItemDecoration(divider);
+
         // Inicializa las listas
         opportunities = getVolunteerOpportunities();
         filteredOpportunities = new ArrayList<>(opportunities);
@@ -51,11 +52,20 @@ public class FragmentSearch extends Fragment {
         adapter = new VolunteerAdapter(filteredOpportunities, this::onOpportunityClick);
         recyclerView.setAdapter(adapter);
 
+        // Configura SearchView
+        searchView = view.findViewById(R.id.search_view);
+        if (searchView != null) {
+            setupSearchView();
+        } else {
+            System.out.println("Error: SearchView no se encontró en el diseño.");
+        }
+
         // Simula la ubicación para pruebas
         simulateLocation();
 
         return view;
     }
+
 
     /**
      * Maneja el clic en una oportunidad para mostrar más detalles.
@@ -170,4 +180,40 @@ public class FragmentSearch extends Fragment {
         filteredOpportunities.addAll(opportunities);
         adapter.updateData(filteredOpportunities);
     }
+
+    private void filterOpportunities(String query) {
+        System.out.println("Filtrando oportunidades con query: " + query);
+        filteredOpportunities.clear();
+        for (VolunteerOpportunity opportunity : opportunities) {
+            if (opportunity.getName().toLowerCase().contains(query.toLowerCase()) ||
+                    opportunity.getDescription().toLowerCase().contains(query.toLowerCase()) ||
+                    opportunity.getCity().toLowerCase().contains(query.toLowerCase()) ||
+                    opportunity.getCountry().toLowerCase().contains(query.toLowerCase())) {
+                filteredOpportunities.add(opportunity);
+            }
+        }
+        System.out.println("Resultados del filtro: " + filteredOpportunities.size() + " elementos encontrados.");
+        adapter.updateData(filteredOpportunities); // Actualiza el adaptador con la lista filtrada
+    }
+
+
+    private void setupSearchView() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Llama a filterOpportunities al enviar la búsqueda
+                filterOpportunities(query);
+                return false; // Devuelve false para cerrar el teclado automáticamente
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Llama a filterOpportunities mientras el usuario escribe
+                filterOpportunities(newText);
+                return false;
+            }
+        });
+    }
+
+
 }
