@@ -1,0 +1,80 @@
+@startuml
+class MainActivity {
+    - binding: ActivityMainBinding
+    + onCreate(Bundle): void
+}
+
+class FragmentHome {
+    + onCreateView(LayoutInflater, ViewGroup, Bundle): View
+}
+
+class FragmentProfile {
+    - profileName: TextView
+    - profileLocation: TextView
+    - profileSkills: TextView
+    - profileInterests: TextView
+    - formEditProfile: LinearLayout
+    - editName: EditText
+    - editLocation: EditText
+    - editSkills: EditText
+    - editInterests: EditText
+    - btnEditProfile: Button
+    - btnSaveProfile: Button
+    - loadProfileData(): void
+    - saveProfileData(): void
+    + onCreateView(LayoutInflater, ViewGroup, Bundle): View
+}
+
+class FragmentSearch {
+    - recyclerView: RecyclerView
+    - searchView: SearchView
+    - opportunities: List<VolunteerOpportunity>
+    - filteredOpportunities: List<VolunteerOpportunity>
+    - simulateLocation(): void
+    - getVolunteerOpportunities(): List<VolunteerOpportunity>
+    - sortOpportunitiesByDistance(Location): void
+    - setupSearchView(): void
+    - filterOpportunities(String): void
+    + onCreateView(LayoutInflater, ViewGroup, Bundle): View
+}
+
+class VolunteerAdapter {
+    - opportunities: List<VolunteerOpportunity>
+    - clickListener: OnOpportunityClickListener
+    - userSkills: List<String>
+    + updateData(List<VolunteerOpportunity>): void
+    + onBindViewHolder(ViewHolder, int): void
+    + onCreateViewHolder(ViewGroup, int): ViewHolder
+}
+
+class VolunteerOpportunity {
+    - name: String
+    - description: String
+    - country: String
+    - city: String
+    - latitude: double
+    - longitude: double
+    - schedule: String
+    - skills: List<String>
+    + getName(): String
+    + getDescription(): String
+    + getCountry(): String
+    + getCity(): String
+    + getLatitude(): double
+    + getLongitude(): double
+    + getSchedule(): String
+    + getSkills(): List<String>
+}
+
+class VolunteerWidget {
+    - getTopOpportunities(): List<VolunteerOpportunity>
+    + onUpdate(Context, AppWidgetManager, int[]): void
+}
+
+MainActivity --> FragmentHome
+MainActivity --> FragmentProfile
+MainActivity --> FragmentSearch
+FragmentSearch --> VolunteerAdapter
+VolunteerAdapter --> VolunteerOpportunity
+VolunteerWidget --> VolunteerOpportunity
+@enduml

@@ -1,0 +1,18 @@
+@startuml
+actor Usuario
+actor Administrador
+
+usecase "Buscar oportunidades" as UC1
+usecase "Registrarse en una oportunidad" as UC2
+usecase "Ver detalles de una oportunidad" as UC3
+usecase "Editar perfil" as UC4
+usecase "Filtrar oportunidades por ubicación" as UC5
+usecase "Visualizar próximas oportunidades (Widget)" as UC6
+
+Usuario --> UC1
+Usuario --> UC2
+Usuario --> UC3
+Usuario --> UC4
+Usuario --> UC5
+Usuario --> UC6
+@enduml
